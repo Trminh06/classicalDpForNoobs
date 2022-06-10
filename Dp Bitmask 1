@@ -1,0 +1,44 @@
+//TASK : https://oj.vnoi.info/problem/qbselect
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int oo = 1e9+ 7;
+const int maxn = 1e4 + 1;
+int n, a[5][maxn], dp[17][maxn], ans = -oo;
+bool okcol(int mask){
+    return (mask & (mask << 1)) == 0;
+}
+bool okrow(int mask1, int mask2){
+    return (mask1 & mask2) == 0;
+}
+int get(int x){
+    return 1 << x;
+}
+int getbit(int x, int i){
+    return ((x >> i) & 1);
+}
+int main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cin >> n;
+    for(int i = 1; i <= 4; ++i)
+        for(int j = 1; j <= n; ++j)
+            cin >> a[i][j], ans = max(ans, a[i][j]);
+    if (ans < 0)
+        return cout << ans, 0;
+    for(int i = 1; i <= n; ++i)
+        for(int mask1 = 0; mask1 < get(4); mask1++)
+            if (okcol(mask1))
+                for(int mask2 = 0; mask2 < get(4); ++mask2)
+                    if (okcol(mask2) && okrow(mask1, mask2)){
+                        int sum = 0;
+                        for(int j = 1; j <= 4; ++j)
+                            if (getbit(mask2, j - 1))
+                                sum+=a[j][i];
+                        dp[mask2][i] = max(dp[mask2][i], dp[mask1][i-1]+sum);
+                    }
+    for(int i = 0; i < get(4); ++i)
+        ans = max(ans, dp[i][n]);
+    cout << ans;
+    return 0;
+}
