@@ -1,0 +1,42 @@
+//TASK : https://atcoder.jp/contests/dp/tasks/dp_f
+
+#include <bits/stdc++.h>
+using namespace std;
+string s, k;
+int n, m, dp[3001][3001];
+void maxi(int &a, int b){
+    if (a < b)
+        a = b;
+}
+int main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cin >> s >> k;
+    n = s.size();
+    m = k.size();
+    s = " " + s;
+    k = " " + k;
+    for(int i = 1; i <= n; ++i)
+        for(int j = 1; j <= m; ++j)
+            if (s[i] == k[j]){
+                maxi(dp[i][j], dp[i - 1][j - 1] + 1);
+            }else
+                maxi(dp[i][j], max(dp[i - 1][j], dp[i][j - 1]));
+    stack <char> ans;
+    while (n && m){
+        if (dp[n - 1][m] == dp[n][m - 1] && dp[n][m] != dp[n - 1][m]){
+            ans.push(s[n]);
+            --n;
+            --m;
+        }else
+            if (dp[n - 1][m] > dp[n][m - 1])
+                --n;
+            else
+                --m;
+    }
+    while (ans.size()){
+        cout << ans.top();
+        ans.pop();
+    }
+    return 0;
+}
